@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generator 2D 3D 4D — BBFS Berdasarkan AS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-6 font-sans">
+  <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-2xl p-6">
+    <h1 class="text-2xl font-bold mb-4 text-center">Generator 2D / 3D / 4D dari BBFS</h1>
+
+    <!-- Dropdown Pilih AS -->
+    <label class="block mb-2 font-semibold">Pilih AS:</label>
+    <select id="asSelect" class="w-full p-2 border rounded mb-4">
+      <option value="">-- Pilih AS --</option>
+      <option value="0">AS 0</option>
+      <option value="1">AS 1</option>
+      <option value="2">AS 2</option>
+      <option value="3">AS 3</option>
+      <option value="4">AS 4</option>
+      <option value="5">AS 5</option>
+      <option value="6">AS 6</option>
+      <option value="7">AS 7</option>
+      <option value="8">AS 8</option>
+      <option value="9">AS 9</option>
+    </select>
+
+    <!-- Dropdown Pilih Jenis Kombinasi -->
+    <label class="block mb-2 font-semibold">Pilih Kombinasi:</label>
+    <select id="typeSelect" class="w-full p-2 border rounded mb-4">
+      <option value="">-- Pilih Jenis --</option>
+      <option value="2">2D</option>
+      <option value="3">3D</option>
+      <option value="4">4D</option>
+    </select>
+
+    <!-- Tombol Generate -->
+    <button onclick="generate()" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
+      Generate
+    </button>
+
+    <!-- Hasil -->
+    <div id="result" class="mt-6 hidden">
+      <h2 class="text-xl font-semibold mb-2">Hasil:</h2>
+      <div id="output" class="grid grid-cols-4 gap-2 text-center"></div>
+      <p id="total" class="mt-4 font-semibold text-blue-700"></p>
+    </div>
+  </div>
+
+  <script>
+    // Data AS → BBFS
+    const bbfsData = {
+      "0": "34056789",
+      "1": "23456790",
+      "2": "12345680",
+      "3": "12356789",
+      "4": "23457890",
+      "5": "12357890",
+      "6": "13467809",
+      "7": "34567890",
+      "8": "12567890",
+      "9": "23467890"
+    };
+
+    // Fungsi kombinasi
+    function getCombinations(arr, length) {
+      let result = [];
+      function helper(start, combo) {
+        if (combo.length === length) {
+          result.push(combo.join(""));
+          return;
+        }
+        for (let i = start; i < arr.length; i++) {
+          helper(i + 1, combo.concat(arr[i]));
+        }
+      }
+      helper(0, []);
+      return result;
+    }
+
+    // Generate hasil
+    function generate() {
+      const asValue = document.getElementById("asSelect").value;
+      const typeValue = document.getElementById("typeSelect").value;
+      const outputDiv = document.getElementById("output");
+      const totalText = document.getElementById("total");
+      const resultBox = document.getElementById("result");
+
+      outputDiv.innerHTML = "";
+      totalText.textContent = "";
+      resultBox.classList.add("hidden");
+
+      if (!asValue || !typeValue) {
+        outputDiv.innerHTML = "<p class='text-red-600'>Silakan pilih AS dan Jenis Kombinasi!</p>";
+        resultBox.classList.remove("hidden");
+        return;
+      }
+
+      const bbfs = bbfsData[asValue].split("");
+      const combos = getCombinations(bbfs, parseInt(typeValue));
+
+      combos.forEach(num => {
+        const div = document.createElement("div");
+        div.className = "p-2 bg-gray-200 rounded";
+        div.textContent = num;
+        outputDiv.appendChild(div);
+      });
+
+      totalText.textContent = `Total: ${combos.length} kombinasi`;
+      resultBox.classList.remove("hidden");
+    }
+  </script>
+</body>
+</html>
