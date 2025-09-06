@@ -35,10 +35,12 @@
       <option value="4">4D</option>
     </select>
 
-    <!-- Tombol Generate -->
-    <button onclick="generate()" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
-      Generate
-    </button>
+    <!-- Tombol -->
+    <div class="flex gap-2 mb-4">
+      <button onclick="generate()" class="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">Generate</button>
+      <button onclick="copyResults()" class="flex-1 bg-emerald-600 text-white py-2 rounded-lg hover:bg-emerald-700 transition">Copy</button>
+      <button onclick="downloadCSV()" class="flex-1 bg-amber-500 text-white py-2 rounded-lg hover:bg-amber-600 transition">Download CSV</button>
+    </div>
 
     <!-- Hasil -->
     <div id="result" class="mt-6 hidden">
@@ -92,7 +94,7 @@
       resultBox.classList.add("hidden");
 
       if (!asValue || !typeValue) {
-        outputDiv.innerHTML = "<p class='text-red-600'>Silakan pilih AS dan Jenis Kombinasi!</p>";
+        outputDiv.innerHTML = "<p class='text-red-600 col-span-4'>Silakan pilih AS dan Jenis Kombinasi!</p>";
         resultBox.classList.remove("hidden");
         return;
       }
@@ -109,6 +111,37 @@
 
       totalText.textContent = `Total: ${combos.length} kombinasi`;
       resultBox.classList.remove("hidden");
+    }
+
+    // Copy hasil ke clipboard
+    function copyResults() {
+      const items = Array.from(document.querySelectorAll("#output div")).map(el => el.textContent);
+      if (items.length === 0) {
+        alert("Belum ada hasil. Silakan Generate dulu.");
+        return;
+      }
+      navigator.clipboard.writeText(items.join(" ")).then(() => {
+        alert("Hasil berhasil disalin ke clipboard!");
+      });
+    }
+
+    // Download hasil sebagai CSV
+    function downloadCSV() {
+      const items = Array.from(document.querySelectorAll("#output div")).map(el => el.textContent);
+      if (items.length === 0) {
+        alert("Belum ada hasil. Silakan Generate dulu.");
+        return;
+      }
+      const csv = items.join("\n");
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "hasil_bbfs.csv";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
     }
   </script>
 </body>
